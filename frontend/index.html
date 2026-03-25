@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Note Extractor — AI-Powered Video Analysis</title>
+  <meta name="description" content="Extract notes from any video using AI transcription, OCR, and summarization. Supports YouTube URLs and local video files." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER / NAV
+════════════════════════════════════════════════════════════ -->
+<header class="header">
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="brand-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M14.5 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V9.5L14.5 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M14 3V10H21" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M10 13L12 15L16 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="brand-name">VideoNotes<span class="brand-ai">AI</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#how-it-works" class="nav-link">How it works</a>
+      <a href="/docs" target="_blank" class="nav-link">API Docs</a>
+    </div>
+    <div class="nav-badge">
+      <span class="badge-dot"></span>
+      <span>Backend Online</span>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO SECTION
+════════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div class="hero-grid"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span>✨</span>
+      <span>AI-Powered Note Extraction</span>
+    </div>
+    <h1 class="hero-title">
+      Turn Any Video Into<br />
+      <span class="gradient-text">Instant Notes</span>
+    </h1>
+    <p class="hero-subtitle">
+      Upload a local video or paste a YouTube URL. Our AI extracts speech, reads on-screen text, and generates structured notes — in seconds.
+    </p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="scrollToApp()">
+        <span>Start Extracting</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M13 6L19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn-ghost" onclick="document.getElementById('yt-tab').click(); scrollToApp()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        Try with YouTube
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">99%</span>
+        <span class="stat-label">Accuracy</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">10+</span>
+        <span class="stat-label">Video Formats</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Export Formats</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════════════════════════ -->
+<section class="app-section" id="app">
+  <div class="container">
+
+    <!-- Source Tabs -->
+    <div class="source-tabs">
+      <button class="tab-btn active" id="upload-tab" onclick="switchTab('upload')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15M17 8L12 3L7 8M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Local Video
+      </button>
+      <button class="tab-btn" id="yt-tab" onclick="switchTab('youtube')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        YouTube URL
+      </button>
+    </div>
+
+    <div class="app-card">
+      <!-- ── Upload Panel ─────────────────────────── -->
+      <div id="upload-panel" class="panel active">
+        <div class="upload-zone" id="upload-zone"
+             ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"
+             onclick="document.getElementById('file-input').click()">
+          <div class="upload-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M21 15V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V15M17 8L12 3L7 8M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="upload-title">Drop your video here</h3>
+          <p class="upload-subtitle">or click to browse · MP4, AVI, MOV, MKV, WEBM supported</p>
+          <div class="upload-formats">
+            <span class="format-tag">MP4</span>
+            <span class="format-tag">AVI</span>
+            <span class="format-tag">MOV</span>
+            <span class="format-tag">MKV</span>
+            <span class="format-tag">WEBM</span>
+            <span class="format-tag">FLV</span>
+          </div>
+          <input type="file" id="file-input" accept=".mp4,.avi,.mov,.mkv,.webm,.flv,.wmv,.m4v" hidden onchange="handleFileSelect(event)" />
+        </div>
+        <div id="file-preview" class="file-preview hidden">
+          <div class="file-info">
+            <div class="file-icon">🎬</div>
+            <div class="file-details">
+              <span class="file-name" id="file-name-display"></span>
+              <span class="file-size" id="file-size-display"></span>
+            </div>
+            <button class="file-remove" onclick="clearFile()" title="Remove file">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── YouTube Panel ───────────────────────── -->
+      <div id="youtube-panel" class="panel">
+        <div class="yt-input-group">
+          <div class="yt-input-wrapper">
+            <div class="yt-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#ff0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </div>
+            <input type="url" id="youtube-url" class="yt-input"
+                   placeholder="https://www.youtube.com/watch?v=..."
+                   oninput="previewYoutube()" />
+            <button class="yt-paste-btn" onclick="pasteFromClipboard()" title="Paste from clipboard">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M16 4H18C19.1 4 20 4.9 20 6V20C20 21.1 19.1 22 18 22H6C4.9 22 4 21.1 4 20V6C4 4.9 4.9 4 6 4H8M9 2H15C15.6 2 16 2.4 16 3V5C16 5.6 15.6 6 15 6H9C8.4 6 8 5.6 8 5V3C8 2.4 8.4 2 9 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+        <!-- YouTube video preview -->
+        <div id="yt-preview" class="yt-preview hidden">
+          <img id="yt-thumb" src="" alt="Video thumbnail" class="yt-thumb" />
+          <div class="yt-meta">
+            <p class="yt-title-preview" id="yt-title-display">Loading...</p>
+            <p class="yt-duration" id="yt-duration-display"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Options ─────────────────────────────── -->
+      <div class="options-section">
+        <h3 class="options-title">Extraction Options</h3>
+        <div class="options-grid">
+          <label class="option-toggle" for="opt-audio">
+            <input type="checkbox" id="opt-audio" checked />
+            <div class="toggle-track">
+              <div class="toggle-thumb"></div>
+            </div>
+            <div class="option-info">
+              <span class="option-label">🎙️ Speech Transcription</span>
+              <span class="option-desc">Convert speech to text using Whisper AI</span>
+            </div>
+          </label>
+          <label class="option-toggle" for="opt-ocr">
+            <input type="checkbox" id="opt-ocr" checked />
+            <div class="toggle-track">
+              <div class="toggle-thumb"></div>
+            </div>
+            <div class="option-info">
+              <span class="option-label">🔍 OCR (Screen Text)</span>
+              <span class="option-desc">Extract text visible in video frames</span>
+            </div>
+          </label>
+          <label class="option-toggle" for="opt-summary">
+            <input type="checkbox" id="opt-summary" checked />
+            <div class="toggle-track">
+              <div class="toggle-thumb"></div>
+            </div>
+            <div class="option-info">
+              <span class="option-label">🤖 AI Summary</span>
+              <span class="option-desc">Generate structured notes using AI</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- ── Submit Button ────────────────────────── -->
+      <button class="btn-extract" id="extract-btn" onclick="startExtraction()">
+        <span class="btn-icon">⚡</span>
+        <span class="btn-text">Extract Notes</span>
+        <div class="btn-shimmer"></div>
+      </button>
+    </div>
+
+    <!-- ═══ PROGRESS ════════════════════════════ -->
+    <div id="progress-card" class="progress-card hidden">
+      <div class="progress-header">
+        <div class="progress-spinner"></div>
+        <div>
+          <h3 class="progress-title">Processing your video...</h3>
+          <p class="progress-message" id="progress-message">Getting started...</p>
+        </div>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-bar" style="width: 0%"></div>
+      </div>
+      <div class="progress-steps">
+        <div class="step" id="step-upload" data-active="false">📁 Upload</div>
+        <div class="step" id="step-transcribe" data-active="false">🎙️ Transcribe</div>
+        <div class="step" id="step-ocr" data-active="false">🔍 OCR</div>
+        <div class="step" id="step-summary" data-active="false">🤖 Summarize</div>
+        <div class="step" id="step-done" data-active="false">✅ Done</div>
+      </div>
+    </div>
+
+    <!-- ═══ RESULTS ══════════════════════════════ -->
+    <div id="results-card" class="results-card hidden">
+      <!-- Results Header -->
+      <div class="results-header">
+        <div class="results-title-group">
+          <div class="results-icon">🎬</div>
+          <div>
+            <h2 class="results-title" id="result-title">Notes Ready</h2>
+            <p class="results-meta" id="result-meta"></p>
+          </div>
+        </div>
+        <button class="btn-new" onclick="resetApp()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L12 22M2 12L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          New Video
+        </button>
+      </div>
+
+      <!-- Results Tabs -->
+      <div class="results-tabs">
+        <button class="result-tab-btn active" onclick="switchResultTab('summary')" id="rt-summary">📝 Summary</button>
+        <button class="result-tab-btn" onclick="switchResultTab('transcript')" id="rt-transcript">🗣️ Transcript</button>
+        <button class="result-tab-btn" onclick="switchResultTab('ocr')" id="rt-ocr">🔍 OCR Text</button>
+      </div>
+
+      <!-- Summary Tab -->
+      <div id="tab-summary" class="result-tab-content active">
+        <div class="notes-content" id="summary-content"></div>
+      </div>
+
+      <!-- Transcript Tab -->
+      <div id="tab-transcript" class="result-tab-content">
+        <div class="transcript-list" id="transcript-content"></div>
+      </div>
+
+      <!-- OCR Tab -->
+      <div id="tab-ocr" class="result-tab-content">
+        <div class="ocr-list" id="ocr-content"></div>
+      </div>
+
+      <!-- Export Section -->
+      <div class="export-section">
+        <h3 class="export-title">📤 Export Notes</h3>
+        <div class="export-options">
+          <div class="export-opt">
+            <label class="export-toggle-label">
+              <input type="checkbox" id="exp-timestamps" checked />
+              <span>Include timestamps</span>
+            </label>
+          </div>
+        </div>
+        <div class="export-buttons">
+          <button class="export-btn export-pdf" onclick="exportNotes('pdf')" id="exp-pdf">
+            <span>📄</span>
+            <span>PDF</span>
+          </button>
+          <button class="export-btn export-word" onclick="exportNotes('word')" id="exp-word">
+            <span>📝</span>
+            <span>Word</span>
+          </button>
+          <button class="export-btn export-md" onclick="exportNotes('markdown')" id="exp-md">
+            <span>#️⃣</span>
+            <span>Markdown</span>
+          </button>
+        </div>
+        <p class="export-status" id="export-status"></p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FEATURES SECTION
+════════════════════════════════════════════════════════════ -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="section-label">Capabilities</div>
+    <h2 class="section-title">Everything you need to capture knowledge</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #667eea, #764ba2)">🎙️</div>
+        <h3>Speech-to-Text</h3>
+        <p>Powered by OpenAI Whisper, running locally with word-level timestamps and 99+ language support.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c)">🔍</div>
+        <h3>OCR Extraction</h3>
+        <p>Automatically scans every frame to extract text from slides, whiteboards, and screen recordings.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe)">🤖</div>
+        <h3>AI Summarization</h3>
+        <p>GPT-4o generates structured notes with key topics, insights, and action items from your content.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7)">📺</div>
+        <h3>YouTube Support</h3>
+        <p>Paste any YouTube URL to instantly download and process the video content without limits.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #fa709a, #fee140)">⏱️</div>
+        <h3>Timestamped Notes</h3>
+        <p>Every transcript segment and OCR result is linked to an exact timestamp in the original video.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb)">📤</div>
+        <h3>Multi-Format Export</h3>
+        <p>Export your notes as PDF, Word document, or Markdown — ready for any workflow.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-brand">
+      <span class="brand-name">VideoNotes<span class="brand-ai">AI</span></span>
+      <p>AI-powered video note extraction</p>
+    </div>
+    <div class="footer-links">
+      <a href="/docs" target="_blank">API Documentation</a>
+      <a href="#features">Features</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
