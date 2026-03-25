@@ -1,0 +1,37 @@
+# Video Note Extractor
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.egg-info/
+dist/
+build/
+.env
+
+# Uploads & Outputs (user data)
+backend/uploads/*
+backend/outputs/*
+!backend/uploads/.gitkeep
+!backend/outputs/.gitkeep
+
+# Virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+
+# Model cache (Whisper downloads)
+*.pt
+*.bin
+
+# Logs
+*.log
